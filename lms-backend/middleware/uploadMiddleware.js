@@ -8,15 +8,23 @@ const bookStorage = multer.diskStorage({
 
   destination: (req, file, cb) => {
 
-    cb(null, "uploads/books");
+    cb(
+      null,
+      "uploads/books"
+    );
 
   },
 
   filename: (req, file, cb) => {
 
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(
+      null,
+      Date.now() +
+        "-" +
+        file.originalname
+    );
 
-  }
+  },
 
 });
 
@@ -28,15 +36,23 @@ const courseStorage = multer.diskStorage({
 
   destination: (req, file, cb) => {
 
-    cb(null, "uploads/courses");
+    cb(
+      null,
+      "uploads/courses"
+    );
 
   },
 
   filename: (req, file, cb) => {
 
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(
+      null,
+      Date.now() +
+        "-" +
+        file.originalname
+    );
 
-  }
+  },
 
 });
 
@@ -48,36 +64,109 @@ const profileStorage = multer.diskStorage({
 
   destination: (req, file, cb) => {
 
-    cb(null, "uploads/profiles");
+    cb(
+      null,
+      "uploads/profiles"
+    );
 
   },
 
   filename: (req, file, cb) => {
 
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(
+      null,
+      Date.now() +
+        "-" +
+        file.originalname
+    );
 
-  }
+  },
 
 });
+
+// =================================
+// Digital Book Upload
+// =================================
+
+const digitalBookStorage =
+  multer.diskStorage({
+
+    destination: (
+      req,
+      file,
+      cb
+    ) => {
+
+      if (
+        file.fieldname ===
+        "coverImage"
+      ) {
+
+        cb(
+          null,
+          "uploads/digital-books/covers"
+        );
+
+      } else if (
+        file.fieldname ===
+        "digitalFile"
+      ) {
+
+        cb(
+          null,
+          "uploads/digital-books/files"
+        );
+
+      } else {
+
+        cb(
+          new Error(
+            "Invalid digital book file field"
+          )
+        );
+
+      }
+
+    },
+
+    filename: (
+      req,
+      file,
+      cb
+    ) => {
+
+      cb(
+        null,
+        Date.now() +
+          "-" +
+          file.originalname
+      );
+
+    },
+
+  });
 
 // =================================
 // Upload Middlewares
 // =================================
 
-exports.bookUpload = multer({
+exports.bookUpload =
+  multer({
+    storage: bookStorage,
+  });
 
-  storage: bookStorage
+exports.courseUpload =
+  multer({
+    storage: courseStorage,
+  });
 
-});
+exports.profileUpload =
+  multer({
+    storage: profileStorage,
+  });
 
-exports.courseUpload = multer({
-
-  storage: courseStorage
-
-});
-
-exports.profileUpload = multer({
-
-  storage: profileStorage
-
-});
+exports.digitalBookUpload =
+  multer({
+    storage:
+      digitalBookStorage,
+  });

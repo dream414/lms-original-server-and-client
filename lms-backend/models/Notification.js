@@ -1,52 +1,71 @@
+
 const mongoose = require("mongoose");
 
-
 const notificationSchema = new mongoose.Schema(
+  {
+    // =====================================
+    // USER
+    // =====================================
 
-{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      
+    },
 
-user:{
-type:mongoose.Schema.Types.ObjectId,
-ref:"User",
-required:true
-},
+    // =====================================
+    // TITLE
+    // =====================================
 
-title:{
-type:String,
-required:true
-},
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-message:{
-type:String,
-required:true
-},
+    // =====================================
+    // MESSAGE
+    // =====================================
 
-type:{
-type:String,
-enum:[
-"Request",
-"Issue",
-"Return",
-"Fine",
-"Course",
-"General"
-],
-default:"General"
-},
+    message: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-isRead:{
-type:Boolean,
-default:false
-}
+    // =====================================
+    // NOTIFICATION TYPE
+    // =====================================
 
-},
+    type: {
+      type: String,
+      enum: [
+        "Request",
+        "Issue",
+        "Return",
+        "Fine",
+        "Course",
+        "General",
+      ],
+      default: "General",
+    },
 
-{timestamps:true}
+    // =====================================
+    // READ STATUS
+    // =====================================
 
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
+module.exports = mongoose.model(
+  "Notification",
+  notificationSchema
+);
 
-
-
-
-module.exports = mongoose.model("Notification", notificationSchema);

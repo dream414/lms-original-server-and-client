@@ -1,32 +1,68 @@
 const mongoose = require("mongoose");
 
+const returnSchema = new mongoose.Schema(
+  {
+    // =====================================
+    // STUDENT
+    // =====================================
 
-const returnSchema=new mongoose.Schema(
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-{
+    // =====================================
+    // BOOK
+    // =====================================
 
-issue:{
-type:mongoose.Schema.Types.ObjectId,
-ref:"IssueBook"
-},
+    book: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+      required: true,
+    },
 
-returnDate:{
-type:Date,
-default:Date.now
-},
+    // =====================================
+    // ISSUE RECORD
+    // =====================================
 
-fine:{
-type:Number,
-default:0
-}
+    issue: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "IssueBook",
+      required: true,
+    },
 
-},
+    // =====================================
+    // RETURN DATE
+    // =====================================
 
-{timestamps:true}
+    returnDate: {
+      type: Date,
+      default: null,
+    },
 
+    // =====================================
+    // FINE
+    // =====================================
+
+    fine: {
+      type: Number,
+      default: 0,
+    },
+
+    // =====================================
+    // RETURN STATUS
+    // =====================================
+
+    status: {
+      type: String,
+      enum: ["Pending", "Returned", "Rejected"],
+      default: "Pending",
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
-
-
-
 
 module.exports = mongoose.model("ReturnBook", returnSchema);

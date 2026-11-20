@@ -1,5 +1,5 @@
 const BookRequest = require("../models/BookRequest");
-const IssueBook = require("../models/IssueBook");
+
 const Book = require("../models/Book");
 const { createNotification } = require("./notificationController");
 
@@ -116,99 +116,84 @@ exports.getAllRequests = async (req, res) => {
 // Approve Request
 // ===============================
 
-exports.approveRequest = async (req, res) => {
+// ===============================
+// Approve Request
+// ===============================
 
+exports.approveRequest = async (req, res) => {
   try {
 
     const request = await BookRequest.findById(req.params.id);
 
     if (!request) {
-
       return res.status(404).json({
-
         message: "Request Not Found",
-
       });
-
     }
+
+    // --------------------------------
+    // FIND BOOK
+    // --------------------------------
 
     const book = await Book.findById(request.book);
 
     if (!book) {
-
       return res.status(404).json({
-
         message: "Book Not Found",
-
       });
-
     }
+
+    // --------------------------------
+    // CHECK BOOK AVAILABILITY
+    // --------------------------------
 
     if (book.availableCopies <= 0) {
-
       return res.status(400).json({
-
         message: "Book Out Of Stock",
-
       });
-
     }
 
-    // Approve Request
+    // --------------------------------
+    // APPROVE ONLY
+    // --------------------------------
+
     request.status = "Approved";
 
     await request.save();
 
-    // Create Issue Record
-    await IssueBook.create({
+    // --------------------------------
+    // NOTIFICATION
+    // --------------------------------
 
-      student: request.student,
-
-      book: request.book,
-
-      request: request._id,
-
-      issueDate: request.issueDate,
-
-      dueDate: request.returnDate,
-
-    });
-
-    // Reduce Available Copies
-    book.availableCopies -= 1;
-
-    await book.save();
-
-    // Notification
     await createNotification(
-
       request.student,
 
       "Book Approved",
 
-      "Your book request has been approved. Please collect your book from the library.",
+      "Your book request has been approved. It is now waiting to be issued by the library.",
 
       "Request"
-
     );
 
+    // --------------------------------
+    // RESPONSE
+    // --------------------------------
+
     res.json({
-
-      message: "Book Issued Successfully",
-
+      message: "Book Request Approved Successfully",
+      request,
     });
 
   } catch (err) {
 
     res.status(500).json({
-
       message: err.message,
-
     });
 
   }
-
 };
+
+
 
 // ===============================
 // Reject Request

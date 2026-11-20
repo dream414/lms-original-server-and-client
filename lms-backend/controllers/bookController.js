@@ -1,149 +1,378 @@
 const Book = require("../models/Book");
 
-// Add Book
+// =====================================================
+// ADD BOOK
+// =====================================================
 
-exports.addBook = async(req,res)=>{
+exports.addBook = async (req, res) => {
+  try {
+    const {
+      title,
+      author,
+      category,
+      isbn,
+      quantity,
+      description,
+    } = req.body;
 
-try{
+    // ==========================================
+    // REQUIRED FIELD CHECK
+    // ==========================================
 
-const book = await Book.create({
+    if (!title || !author || !category || !isbn) {
+      return res.status(400).json({
+        message:
+          "Title, author, category and ISBN are required.",
+      });
+    }
 
-title:req.body.title,
-author:req.body.author,
-category:req.body.category,
-isbn:req.body.isbn,
-quantity:req.body.quantity,
-availableCopies:req.body.quantity,
-description:req.body.description,
-image:req.file ? req.file.filename : ""
+    // ==========================================
+    // QUANTITY
+    // ==========================================
 
-});
+    const totalQuantity = Number(quantity) || 1;
 
-res.status(201).json(book);
+    if (totalQuantity < 1) {
+      return res.status(400).json({
+        message: "Quantity must be at least 1.",
+      });
+    }
 
-}catch(err){
+    // ==========================================
+    // CHECK DUPLICATE ISBN
+    // ==========================================
 
-res.status(500).json({message:err.message});
+    const existingBook = await Book.findOne({
+      isbn: isbn.trim(),
+    });
 
-}
+    if (existingBook) {
+      return res.status(400).json({
+        message: "A book with this ISBN already exists.",
+      });
+    }
 
+    // ==========================================
+    // IMAGE
+    // ==========================================
+
+    const image = req.file
+      ? req.file.filename
+      : "";
+
+    // ==========================================
+    // CREATE BOOK
+    // ==========================================
+
+    const book = await Book.create({
+      title: title.trim(),
+      author: author.trim(),
+      category: category.trim(),
+      isbn: isbn.trim(),
+      quantity: totalQuantity,
+      availableCopies: totalQuantity,
+      description: description || "",
+      image,
+    });
+
+    // ==========================================
+    // RESPONSE
+    // ==========================================
+
+    res.status(201).json({
+      message: "Book added successfully.",
+      book,
+    });
+  } catch (error) {
+    console.error("ADD BOOK ERROR:", error);
+
+    // Duplicate ISBN
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "A book with this ISBN already exists.",
+      });
+    }
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
+// =====================================================
+// GET ALL BOOKS
+// =====================================================
 
-// Get All Books
+exports.getBooks = async (req, res) => {
+  try {
+    const books = await Book.find().sort({
+      createdAt: -1,
+    });
 
-exports.getBooks = async(req,res)=>{
+    res.status(200).json({
+      count: books.length,
+      books,
+    });
+  } catch (error) {
+    console.error("GET BOOKS ERROR:", error);
 
-try{
-
-const books = await Book.find();
-
-res.json(books);
-
-}catch(err){
-
-res.status(500).json({message:err.message});
-
-}
-
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
+// =====================================================
+// GET SINGLE BOOK
+// =====================================================
 
-// Get Single Book
+exports.getBook = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
 
-exports.getBook = async(req,res)=>{
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found.",
+      });
+    }
 
-try{
+    res.status(200).json(book);
+  } catch (error) {
+    console.error("GET BOOK ERROR:", error);
 
-const book = await Book.findById(req.params.id);
-
-res.json(book);
-
-}catch(err){
-
-res.status(500).json({message:err.message});
-
-}
-
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
+// =====================================================
+// UPDATE BOOK
+// =====================================================
 
-// Update Book
+exports.updateBook = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
 
-exports.updateBook = async(req,res)=>{
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found.",
+      });
+    }
 
-try{
+    const {
+      title,
+      author,
+      category,
+      isbn,
+      quantity,
+      description,
+      image,
+    } = req.body;
 
-const book = await Book.findByIdAndUpdate(
+    // ==========================================
+    // BASIC FIELDS
+    // ==========================================
 
-req.params.id,
+    if (title !== undefined) {
+      book.title = title.trim();
+    }
 
-req.body,
+    if (author !== undefined) {
+      book.author = author.trim();
+    }
 
-{new:true}
+    if (category !== undefined) {
+      book.category = category.trim();
+    }
 
-);
+    if (isbn !== undefined) {
+      const existingISBN = await Book.findOne({
+        isbn: isbn.trim(),
+        _id: { $ne: book._id },
+      });
 
-res.json(book);
+      if (existingISBN) {
+        return res.status(400).json({
+          message:
+            "Another book with this ISBN already exists.",
+        });
+      }
 
-}catch(err){
+      book.isbn = isbn.trim();
+    }
 
-res.status(500).json({message:err.message});
+    if (description !== undefined) {
+      book.description = description;
+    }
 
-}
+    // ==========================================
+    // QUANTITY LOGIC
+    // ==========================================
 
+    if (quantity !== undefined) {
+      const newQuantity = Number(quantity);
+
+      if (newQuantity < 1) {
+        return res.status(400).json({
+          message: "Quantity must be at least 1.",
+        });
+      }
+
+      // Currently issued copies
+      const issuedCopies =
+        book.quantity - book.availableCopies;
+
+      if (newQuantity < issuedCopies) {
+        return res.status(400).json({
+          message:
+            `Quantity cannot be less than currently issued copies (${issuedCopies}).`,
+        });
+      }
+
+      book.quantity = newQuantity;
+
+      // Preserve currently issued copies
+      book.availableCopies =
+        newQuantity - issuedCopies;
+    }
+
+    // ==========================================
+    // IMAGE
+    // ==========================================
+
+    if (req.file) {
+      book.image = req.file.filename;
+    } else if (image !== undefined) {
+      book.image = image;
+    }
+
+    // ==========================================
+    // SAVE
+    // ==========================================
+
+    await book.save();
+
+    res.status(200).json({
+      message: "Book updated successfully.",
+      book,
+    });
+  } catch (error) {
+    console.error("UPDATE BOOK ERROR:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "A book with this ISBN already exists.",
+      });
+    }
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
+// =====================================================
+// DELETE BOOK
+// =====================================================
 
-// Delete Book
+exports.deleteBook = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
 
-exports.deleteBook = async(req,res)=>{
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found.",
+      });
+    }
 
-try{
+    // ==========================================
+    // CHECK ISSUED COPIES
+    // ==========================================
 
-await Book.findByIdAndDelete(req.params.id);
+    const issuedCopies =
+      book.quantity - book.availableCopies;
 
-res.json({
+    if (issuedCopies > 0) {
+      return res.status(400).json({
+        message:
+          "This book cannot be deleted because some copies are currently issued.",
+      });
+    }
 
-message:"Book Deleted"
+    // ==========================================
+    // DELETE
+    // ==========================================
 
-});
+    await Book.findByIdAndDelete(req.params.id);
 
-}catch(err){
+    res.status(200).json({
+      message: "Book deleted successfully.",
+    });
+  } catch (error) {
+    console.error("DELETE BOOK ERROR:", error);
 
-res.status(500).json({message:err.message});
-
-}
-
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
+// =====================================================
+// SEARCH BOOK
+// =====================================================
 
-// Search Book
+exports.searchBook = async (req, res) => {
+  try {
+    const keyword =
+      req.query.keyword?.trim() || "";
 
-exports.searchBook = async(req,res)=>{
+    if (!keyword) {
+      return res.status(400).json({
+        message: "Please enter a search keyword.",
+      });
+    }
 
-try{
+    const books = await Book.find({
+      $or: [
+        {
+          title: {
+            $regex: keyword,
+            $options: "i",
+          },
+        },
+        {
+          author: {
+            $regex: keyword,
+            $options: "i",
+          },
+        },
+        {
+          category: {
+            $regex: keyword,
+            $options: "i",
+          },
+        },
+        {
+          isbn: {
+            $regex: keyword,
+            $options: "i",
+          },
+        },
+      ],
+    }).sort({
+      createdAt: -1,
+    });
 
-const keyword=req.query.keyword;
+    res.status(200).json({
+      count: books.length,
+      books,
+    });
+  } catch (error) {
+    console.error("SEARCH BOOK ERROR:", error);
 
-const books=await Book.find({
-
-title:{
-
-$regex:keyword,
-
-$options:"i"
-
-}
-
-});
-
-res.json(books);
-
-}catch(err){
-
-res.status(500).json({message:err.message});
-
-}
-
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };

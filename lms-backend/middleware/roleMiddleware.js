@@ -1,7 +1,5 @@
 const authorize = (...roles) => {
-
   return (req, res, next) => {
-
     // User authentication check
     if (!req.user) {
       return res.status(401).json({

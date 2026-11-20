@@ -1,19 +1,71 @@
+
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
+
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 const DashboardLayout = () => {
+  // ==========================================
+  // MOBILE SIDEBAR STATE
+  // ==========================================
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-950 via-green-900 to-green-800">
+    <div className="min-h-screen w-full bg-slate-100">
 
-      <Sidebar />
+      {/* =====================================================
+          HEADER
+          Full width across the complete screen
+      ===================================================== */}
 
-      <div className="lg:ml-64 min-h-screen">
+      <Header setSidebarOpen={setSidebarOpen} />
 
-        <Header />
+      {/* =====================================================
+          SIDEBAR
+          Desktop:
+          Starts BELOW the header
 
-        <main className="p-4 sm:p-6">
+          Mobile:
+          Opens as a responsive drawer
+      ===================================================== */}
+
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+
+      {/* =====================================================
+          MAIN CONTENT
+          Desktop content starts after sidebar
+          Mobile content uses full width
+      ===================================================== */}
+
+      <div
+        className="
+          min-h-[calc(100vh-4rem)]
+
+          lg:ml-64
+        "
+      >
+
+        <main
+          className="
+            min-h-[calc(100vh-4rem)]
+
+            bg-slate-100
+
+            p-4
+
+            sm:p-5
+            md:p-6
+            lg:p-7
+          "
+        >
+
           <Outlet />
+
         </main>
 
       </div>
@@ -23,3 +75,4 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
+

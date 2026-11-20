@@ -1,50 +1,72 @@
+
 const mongoose = require("mongoose");
 
-
 const fineSchema = new mongoose.Schema(
+  {
+    // =====================================
+    // STUDENT
+    // =====================================
 
-{
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-student:{
-type:mongoose.Schema.Types.ObjectId,
-ref:"User",
-required:true
-},
+    // =====================================
+    // ISSUE BOOK
+    // =====================================
 
-issue:{
-type:mongoose.Schema.Types.ObjectId,
-ref:"IssueBook",
-required:true
-},
+    issue: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "IssueBook",
+      required: true,
+    },
 
-amount:{
-type:Number,
-default:0
-},
+    // =====================================
+    // FINE AMOUNT
+    // =====================================
 
-daysLate:{
-type:Number,
-default:0
-},
+    amount: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
 
-status:{
-type:String,
-enum:["Unpaid","Paid"],
-default:"Unpaid"
-},
+    // =====================================
+    // DAYS LATE
+    // =====================================
 
-paidDate:{
-type:Date
-}
+    daysLate: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
 
-},
+    // =====================================
+    // PAYMENT STATUS
+    // =====================================
 
-{timestamps:true}
+    status: {
+      type: String,
+      enum: ["Unpaid", "Paid"],
+      default: "Unpaid",
+    },
 
+    // =====================================
+    // PAID DATE
+    // =====================================
+
+    paidDate: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-
-
-
-
 module.exports = mongoose.model("Fine", fineSchema);
+

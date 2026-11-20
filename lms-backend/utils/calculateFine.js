@@ -1,36 +1,35 @@
+
 const calculateFine = (dueDate, returnDate) => {
+  const due = new Date(dueDate);
+  const returned = new Date(returnDate);
 
-const due = new Date(dueDate);
+  const diff = returned - due;
 
-const returned = new Date(returnDate);
+  const days = Math.ceil(
+    diff / (1000 * 60 * 60 * 24)
+  );
 
-const diff = returned - due;
+  // =====================================
+  // BOOK RETURNED ON TIME
+  // =====================================
 
-const days = Math.ceil(
-diff / (1000 * 60 * 60 * 24)
-);
+  if (days <= 0) {
+    return {
+      daysLate: 0,
+      amount: 0,
+    };
+  }
 
+  // =====================================
+  // LATE RETURN
+  // Rs.20 PER DAY
+  // =====================================
 
-if(days <= 0){
-
-return {
-
-daysLate: 0,
-amount: 0
-
+  return {
+    daysLate: days,
+    amount: days * 20,
+  };
 };
-
-}
-
-
-return {
-
-daysLate: days,
-amount: days * 20
-
-};
-
-};
-
 
 module.exports = calculateFine;
+

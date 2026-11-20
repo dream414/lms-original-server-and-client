@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const requestSchema = new mongoose.Schema(
   {
     student: {
@@ -27,7 +26,7 @@ const requestSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Approved", "Rejected"],
+      enum: ["Pending", "Approved", "Rejected", "Issued"],
       default: "Pending",
     },
 
@@ -40,9 +39,5 @@ const requestSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-
-
-
 
 module.exports = mongoose.model("BookRequest", requestSchema);

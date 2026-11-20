@@ -3,75 +3,335 @@ import { useNavigate } from "react-router-dom";
 const Welcome = () => {
   const navigate = useNavigate();
 
+  // ==========================================
+  // BRAND COLORS
+  // ==========================================
+  const brandColor = "#890C25";
+  const brandLightColor = "#D58A98";
+
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-black px-4 py-8">
+    <div className="relative min-h-screen w-full overflow-hidden">
 
-      {/* Background Glow */}
-      <div className="absolute -left-20 -top-20 h-60 w-60 rounded-full bg-green-500/10 blur-3xl"></div>
+      {/* ==========================================
+          FULL HOME BACKGROUND IMAGE
+      ========================================== */}
+      <img
+        src="/lms-home.png"
+        alt="The Shaikh Ayaz University Shikarpur"
+        className="
+          absolute
+          inset-0
+          h-full
+          w-full
+          object-cover
+          object-center
+          scale-[1.12]
+          translate-y-3
 
-      <div className="absolute -bottom-20 -right-20 h-60 w-60 rounded-full bg-green-400/10 blur-3xl"></div>
+          sm:scale-[1.10]
+          sm:translate-y-4
 
-      {/* Main Content */}
-      <div className="relative z-10 flex w-full max-w-lg flex-col items-center text-center">
+          md:scale-[1.08]
+          md:translate-y-5
+        "
+      />
 
-        {/* LMS Logo */}
-        <div className="mb-7 flex h-36 w-36 items-center justify-center rounded-full border border-green-400/40 bg-green-950/60 p-2 shadow-2xl shadow-green-900/40 sm:h-44 sm:w-44">
+      {/* ==========================================
+          PROFESSIONAL READABILITY OVERLAY
+      ========================================== */}
+      <div
+        className="
+          absolute
+          inset-0
+          bg-gradient-to-b
+          from-black/15
+          via-black/30
+          to-black/50
+        "
+      />
 
-          <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-green-500/60 bg-black/30">
+      <div className="absolute inset-0 bg-black/10" />
 
+      {/* ==========================================
+          HOME CONTENT
+      ========================================== */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-5 py-10 sm:px-8">
+
+        <div
+          className="
+            w-full
+            max-w-6xl
+            -translate-y-5
+            text-center
+
+            sm:-translate-y-7
+            md:-translate-y-9
+          "
+        >
+
+          {/* ======================================
+              UNIVERSITY LOGO
+              SLIGHTLY LARGER
+          ====================================== */}
+          <div
+            className="
+              mx-auto
+              flex
+              h-32
+              w-32
+              items-center
+              justify-center
+
+              sm:h-36
+              sm:w-36
+
+              md:h-40
+              md:w-40
+
+              lg:h-44
+              lg:w-44
+            "
+          >
             <img
               src="/lms-logo.png"
-              alt="LMS Logo"
-              className="h-full w-full rounded-full object-cover"
+              alt="University Logo"
+              className="
+                h-full
+                w-full
+                object-contain
+
+                drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)]
+              "
             />
+          </div>
+
+          {/* ======================================
+              STYLISH UNIVERSITY NAME
+          ====================================== */}
+          <h1
+            className="
+              mt-8
+
+              font-black
+              uppercase
+              leading-tight
+              tracking-[0.08em]
+
+              text-white
+
+              text-xl
+              sm:text-2xl
+              md:text-3xl
+              lg:text-4xl
+              xl:text-5xl
+
+              drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)]
+
+              [text-shadow:0_3px_0_rgba(137,12,37,0.35),0_6px_18px_rgba(0,0,0,0.75)]
+
+              xl:whitespace-nowrap
+            "
+          >
+            THE SHAIKH AYAZ UNIVERSITY SHIKARPUR
+          </h1>
+
+          {/* ======================================
+              LIBRARY MANAGEMENT SYSTEM
+          ====================================== */}
+          <div className="mt-5 flex justify-center">
+
+            <h2
+              className="
+                inline-block
+                rounded-md
+
+                px-5
+                py-2.5
+
+                text-xl
+                font-bold
+                leading-tight
+                tracking-wide
+                text-white
+
+                shadow-[0_5px_20px_rgba(0,0,0,0.55)]
+                drop-shadow-[0_3px_8px_rgba(0,0,0,0.9)]
+
+                sm:px-6
+                sm:py-3
+                sm:text-2xl
+
+                md:text-3xl
+                lg:text-4xl
+              "
+              style={{
+                backgroundColor: brandColor,
+              }}
+            >
+              Library Management System
+            </h2>
 
           </div>
 
-        </div>
+          {/* ======================================
+              TAGLINE
+          ====================================== */}
+          <div className="mt-3 flex justify-center">
 
-        {/* Brand */}
-        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.3em] text-green-400">
-          LMS
-        </p>
+            <p
+              className="
+                inline-block
 
-        {/* Heading */}
-        <h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-          Welcome to
-          <span className="block text-green-400">
-            Learning Management System
-          </span>
-        </h1>
+                border-b-2
+                border-white
+                pb-1
 
-        {/* Description */}
-        <p className="mt-5 max-w-md text-sm leading-6 text-gray-400 sm:text-base">
-          A simple and powerful platform to manage learning,
-          courses, books, students and academic activities.
-        </p>
+                text-base
+                font-semibold
+                italic
+                tracking-wide
 
-        {/* Get Started */}
-        <button
-          onClick={() => navigate("/login")}
-          className="group mt-8 flex w-full max-w-xs items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-green-900/30 transition-all duration-300 hover:bg-green-500 hover:shadow-green-700/30 active:scale-95 sm:text-base"
-        >
-          Get Started
+                drop-shadow-[0_3px_8px_rgba(0,0,0,0.95)]
 
-          <span className="transition-transform duration-300 group-hover:translate-x-1">
-            →
-          </span>
-        </button>
+                sm:text-lg
+                md:text-xl
+                lg:text-2xl
+              "
+              style={{
+                color: brandLightColor,
+              }}
+            >
+              Revival of Educational Glory of Shikarpur
+            </p>
 
-        {/* Bottom Features */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-gray-500 sm:text-sm">
+          </div>
 
-          <span>Secure</span>
+          {/* ======================================
+              DESCRIPTION
+          ====================================== */}
+          <p
+            className="
+              mx-auto
+              mt-5
+              max-w-2xl
 
-          <span className="text-green-700">•</span>
+              text-xs
+              font-medium
+              leading-6
+              text-white
 
-          <span>Simple</span>
+              drop-shadow-[0_3px_8px_rgba(0,0,0,1)]
 
-          <span className="text-green-700">•</span>
+              sm:text-sm
+              md:text-base
+            "
+          >
+            A modern digital platform for managing library
+            resources, books, academic services and
+            university learning resources.
+          </p>
 
-          <span>Smart</span>
+          {/* ======================================
+              ACTION BUTTONS
+          ====================================== */}
+          <div
+            className="
+              mt-7
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-3
+
+              sm:flex-row
+            "
+          >
+
+            {/* LOGIN */}
+            <button
+              type="button"
+              onClick={() => navigate("/login")}
+              className="
+                w-full
+                max-w-xs
+                rounded-lg
+
+                px-7
+                py-3
+
+                text-sm
+                font-semibold
+                text-white
+
+                shadow-[0_5px_18px_rgba(0,0,0,0.55)]
+
+                transition
+                hover:brightness-110
+                hover:shadow-2xl
+                active:scale-95
+
+                sm:w-auto
+              "
+              style={{
+                backgroundColor: brandColor,
+              }}
+            >
+              Login to Library
+            </button>
+
+            {/* REGISTER */}
+            <button
+              type="button"
+              onClick={() => navigate("/register")}
+              className="
+                w-full
+                max-w-xs
+                rounded-lg
+
+                border
+                border-white/80
+
+                bg-black/20
+
+                px-7
+                py-3
+
+                text-sm
+                font-semibold
+                text-white
+
+                shadow-[0_5px_18px_rgba(0,0,0,0.45)]
+
+                backdrop-blur-sm
+
+                transition
+                hover:bg-black/30
+                active:scale-95
+
+                sm:w-auto
+              "
+            >
+              Create Account
+            </button>
+
+          </div>
+
+          {/* ======================================
+              FOOTER
+          ====================================== */}
+          <p
+            className="
+              mt-8
+              text-[10px]
+              text-white
+
+              drop-shadow-[0_3px_7px_rgba(0,0,0,0.95)]
+
+              sm:text-xs
+            "
+          >
+            © {new Date().getFullYear()} The Shaikh Ayaz University Shikarpur
+          </p>
 
         </div>
 
@@ -82,3 +342,4 @@ const Welcome = () => {
 };
 
 export default Welcome;
+

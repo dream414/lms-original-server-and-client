@@ -1,80 +1,77 @@
+
 const express = require("express");
 
 const router = express.Router();
 
+const protect = require("../middleware/authMiddleware");
+const authorize = require("../middleware/roleMiddleware");
 
 const {
   createRequest,
   myRequests,
   getAllRequests,
   approveRequest,
-  rejectRequest
+  rejectRequest,
 } = require("../controllers/requestController");
 
-
-const protect = require("../middleware/authMiddleware");
-
-const authorize = require("../middleware/roleMiddleware");
-
-
-// =================================
-// Student Create Book Request
-// =================================
+// =====================================================
+// STUDENT — CREATE BOOK REQUEST
+// POST /api/requests
+// =====================================================
 
 router.post(
   "/",
   protect,
+  authorize("student"),
   createRequest
 );
 
-
-// =================================
-// Student My Requests
-// =================================
+// =====================================================
+// STUDENT — MY REQUESTS
+// GET /api/requests/my
+// =====================================================
 
 router.get(
   "/my",
   protect,
+  authorize("student"),
   myRequests
 );
 
-
-// =================================
-// Admin + SuperAdmin View All Requests
-// =================================
+// =====================================================
+// SUPER ADMIN + ADMIN — GET ALL REQUESTS
+// GET /api/requests
+// =====================================================
 
 router.get(
   "/",
   protect,
-  authorize("admin", "superadmin"),
+  authorize("superadmin", "admin","librarian"),
   getAllRequests
 );
 
-
-// =================================
-// Approve Request
-// Admin + SuperAdmin
-// =================================
+// =====================================================
+// SUPER ADMIN + ADMIN — APPROVE REQUEST
+// PUT /api/requests/:id/approve
+// =====================================================
 
 router.put(
-  "/approve/:id",
+  "/:id/approve",
   protect,
-  authorize("admin", "superadmin"),
+  authorize("superadmin", "admin"),
   approveRequest
 );
 
-
-// =================================
-// Reject Request
-// Admin + SuperAdmin
-// =================================
+// =====================================================
+// SUPER ADMIN + ADMIN — REJECT REQUEST
+// PUT /api/requests/:id/reject
+// =====================================================
 
 router.put(
-  "/reject/:id",
+  "/:id/reject",
   protect,
-  authorize("admin", "superadmin"),
+  authorize("superadmin", "admin"),
   rejectRequest
 );
-
 
 module.exports = router;

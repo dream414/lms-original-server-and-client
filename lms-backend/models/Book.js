@@ -1,51 +1,92 @@
 const mongoose = require("mongoose");
 
 const bookSchema = new mongoose.Schema(
-{
-    title:{
-        type:String,
-        required:true
+  {
+    // ==========================================
+    // BOOK TITLE
+    // ==========================================
+
+    title: {
+      type: String,
+      required: true,
+      trim: true,
     },
 
-    author:{
-        type:String,
-        required:true
+    // ==========================================
+    // AUTHOR
+    // ==========================================
+
+    author: {
+      type: String,
+      required: true,
+      trim: true,
     },
 
-    category:{
-        type:String,
-        required:true
+    // ==========================================
+    // CATEGORY
+    // ==========================================
+
+    category: {
+      type: String,
+      required: true,
+      trim: true,
     },
 
-    isbn:{
-        type:String,
-        required:true,
-        unique:true
+    // ==========================================
+    // ISBN
+    // ==========================================
+
+    isbn: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
     },
 
-    quantity:{
-        type:Number,
-        default:1
+    // ==========================================
+    // TOTAL QUANTITY
+    // ==========================================
+
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+      default: 1,
     },
 
-   availableCopies: {
-    type: Number,
-    default: 1
-},
+    // ==========================================
+    // AVAILABLE COPIES
+    // ==========================================
 
-    description:{
-        type:String,
-        default:""
+    availableCopies: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 1,
     },
 
-    image:{
-        type:String,
-        default:""
-    }
+    // ==========================================
+    // DESCRIPTION
+    // ==========================================
 
-},
-{
-    timestamps:true
-});
+    description: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    // ==========================================
+    // BOOK IMAGE
+    // ==========================================
+
+    image: {
+      type: String,
+      default: "",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Book", bookSchema);
